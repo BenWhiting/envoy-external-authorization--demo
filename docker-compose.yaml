@@ -1,0 +1,43 @@
+version: '3.5'
+services:
+  envoy:
+    build:
+      context: ./envoy
+      dockerfile: Dockerfile
+    volumes:
+      - ./envoy/config.yaml:/etc/config.yaml
+    networks:
+      - envoymesh
+    expose:
+      - "80"
+      - "8001"
+    ports:
+      - "80:80"
+      - "8081:8081"
+  authz:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    networks:
+      envoymesh:
+        aliases:
+          - authz
+    expose:
+      - "8080"
+  service1:
+    build:
+      context: ./service
+      dockerfile: Dockerfile
+    volumes:
+      - ./service/envoy.yaml:/etc/service-envoy.yaml
+    networks:
+      envoymesh:
+        aliases:
+          - service1
+    environment:
+      - SERVICE_NAME=1
+    expose:
+      - "80"
+
+networks:
+  envoymesh: {}
