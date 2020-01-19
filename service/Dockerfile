@@ -1,4 +1,4 @@
-FROM envoyproxy/envoy-alpine:latest
+FROM alpine:latest
 
 RUN apk update && apk add python3 bash
 RUN pip3 install -q Flask==0.11.1 requests==2.18.4
@@ -6,4 +6,4 @@ RUN mkdir /code
 ADD service.py /code
 ADD start.sh /usr/local/bin/start_service.sh
 RUN chmod u+x /usr/local/bin/start_service.sh
-ENTRYPOINT /usr/local/bin/start_service.sh
+ENTRYPOINT ["python3", "/code/service.py"]
